@@ -33,3 +33,4 @@ ios/build/
 .playwright/
 test-results/
 generated/
+work/
