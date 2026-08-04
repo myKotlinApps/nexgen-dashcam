@@ -1,14 +1,13 @@
-export default function TripsPage() {
-  return (
-    <div className="space-y-6">
-      <div><p className="eyebrow">NEXGEN / سفرها</p><h1 className="text-3xl font-bold">سفرهای ثبت‌شده</h1><p className="mt-2 text-text-secondary">مسیرها، تله‌متری GPS و رویدادهای پلاک در یک نگاه.</p></div>
+'use client';
 
-      <div className="rounded-lg border border-border bg-surface p-6">
-        <div className="flex flex-col items-center justify-center py-12 text-text-secondary">
-          <span className="text-4xl mb-3">🚗</span>
-          <p>هنوز سفری ثبت نشده است.</p><p className="text-sm mt-1">ضبط را از اپ موبایل شروع کنید تا سفرها اینجا نمایش داده شوند.</p>
-        </div>
-      </div>
-    </div>
-  );
+import { useMemo, useState } from 'react';
+import { Calendar } from '@/components/ui/calendar';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+const recordedDays = [new Date(2026, 7, 2), new Date(2026, 7, 3), new Date(2026, 7, 4)];
+
+export default function TripsPage() {
+  const [date, setDate] = useState<Date | undefined>(new Date(2026, 7, 4));
+  const selectedLabel = useMemo(() => date ? new Intl.DateTimeFormat('fa-IR', { dateStyle: 'long' }).format(date) : 'تاریخی انتخاب نشده', [date]);
+  return <div className="space-y-6"><div><p className="eyebrow">NEXGEN / آرشیو</p><h1 className="text-3xl font-bold">آرشیو سفرها</h1><p className="mt-2 text-text-secondary">تاریخ را انتخاب کنید تا ضبط‌ها، مسیر GPS و رویدادهای همان روز را ببینید.</p></div><div className="archive-grid"><Card className="archive-calendar-card"><CardHeader><CardTitle>تقویم ضبط‌ها</CardTitle><p className="text-sm text-text-secondary">روزهای دارای ضبط با نقطه مشخص شده‌اند.</p></CardHeader><CardContent><Calendar mode="single" selected={date} onSelect={setDate} modifiers={{ recorded: recordedDays }} modifiersClassNames={{ recorded: 'recorded-day' }} className="mx-auto" /></CardContent></Card><Card className="archive-detail-card"><CardHeader><p className="eyebrow">سفرهای انتخاب‌شده</p><CardTitle>{selectedLabel}</CardTitle></CardHeader><CardContent>{date && recordedDays.some(day => day.toDateString() === date.toDateString()) ? <div className="archive-trip"><span className="trip-status" /><div><strong>سفر آزمایشی</strong><p>مسیر GPS آماده بررسی است</p></div><span className="trip-duration">—</span></div> : <div className="archive-empty"><div className="empty-icon">◌</div><strong>ضبطی برای این روز نیست</strong><p>یک روز دیگر را از تقویم انتخاب کنید.</p></div>}</CardContent></Card></div></div>;
 }
