@@ -1,39 +1,5 @@
 export default function DashboardPage() {
-  return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-        <p className="mt-2 text-text-secondary">
-          Overview of your dash cam recordings, trips, and recognized plates.
-        </p>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard title="Total Trips" value="0" subtitle="No trips yet" />
-        <StatCard title="Recorded Hours" value="0h" subtitle="Start recording" />
-        <StatCard title="Plates Recognized" value="0" subtitle="Enable ALPR" />
-        <StatCard title="Storage Used" value="0 GB" subtitle="of 8 GB" />
-      </div>
-
-      {/* Recent Activity */}
-      <div className="rounded-lg border border-border bg-surface p-6">
-        <h2 className="text-lg font-semibold mb-4">Recent Activity</h2>
-        <div className="flex flex-col items-center justify-center py-12 text-text-secondary">
-          <span className="text-4xl mb-3">📹</span>
-          <p>No recordings yet. Start your first trip from the mobile app.</p>
-        </div>
-      </div>
-    </div>
-  );
+  return <div className="dashboard-shell"><section className="dashboard-intro"><div><p className="eyebrow">NEXGEN / اتاق کنترل</p><h1>هر کیلومتر، تحت کنترل.</h1><p className="intro-copy">هوشمندی رانندگی شما، همیشه آماده.</p></div><div className="connection-pill"><span className="status-dot" /> اپ موبایل متصل نیست</div></section><section className="command-panel"><div className="command-copy"><div className="panel-kicker"><span className="pulse-ring" /> آماده ضبط</div><h2>سفر بعدی از اینجا شروع می‌شود.</h2><p>اپ موبایل را متصل کنید تا تصویر زنده، تله‌متری GPS و پلاک‌های شناسایی‌شده را ببینید.</p><a className="primary-action" href="/settings">اتصال اپ موبایل <span>←</span></a></div><div className="radar-orb" aria-hidden="true"><div className="radar-sweep" /><span>۰۱</span></div><div className="command-meta"><span>آخرین همگام‌سازی</span><strong>—</strong><span>دوربین</span><strong>در انتظار</strong></div></section><section className="metric-grid" aria-label="نمای کلی سفر"><StatCard label="سفرها" title="مجموع سفرها" value="۰" subtitle="هنوز سفری ثبت نشده" accent="blue" /><StatCard label="زمان" title="ساعت ضبط‌شده" value="۰ساعت" subtitle="اولین سفر را شروع کنید" accent="violet" /><StatCard label="ALPR" title="پلاک‌های شناسایی‌شده" value="۰" subtitle="شناسایی پلاک را فعال کنید" accent="green" /><StatCard label="فضا" title="فضای مصرف‌شده" value="۰ گیگ" subtitle="از ۸ گیگابایت موجود" accent="amber" /></section><section className="activity-panel"><div className="section-heading"><div><p className="eyebrow">خط زمانی</p><h2>فعالیت‌های اخیر</h2></div><a href="/trips">مشاهده سفرها <span>←</span></a></div><div className="empty-state"><div className="empty-icon">◌</div><h3>داستان جاده‌ای شما از اینجا شروع می‌شود.</h3><p>پس از اتصال اپ موبایل، سفرها، موقعیت‌ها و رویدادهای پلاک اینجا نمایش داده می‌شوند.</p></div></section></div>;
 }
 
-function StatCard({ title, value, subtitle }: { title: string; value: string; subtitle: string }) {
-  return (
-    <div className="rounded-lg border border-border bg-surface p-5">
-      <p className="text-sm text-text-secondary">{title}</p>
-      <p className="mt-1 text-2xl font-bold">{value}</p>
-      <p className="mt-1 text-xs text-text-secondary">{subtitle}</p>
-    </div>
-  );
-}
+function StatCard({ label, title, value, subtitle, accent }: { label: string; title: string; value: string; subtitle: string; accent: string }) { return <div className={`metric-card ${accent}`}><div className="metric-top"><span>{label}</span><i /></div><p>{title}</p><strong>{value}</strong><small>{subtitle}</small></div>; }
