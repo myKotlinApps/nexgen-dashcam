@@ -1,0 +1,54 @@
+# Iranian License Plate Model Registry
+# Models are NOT bundled — downloaded on first use or during CI/CD.
+
+models:
+  plate_detector:
+    - name: "YOLOv12 Persian Plate Detector"
+      source: "https://huggingface.co/makhresearch/persian-license-plate-detector"
+      file: "best.pt"
+      format: "pytorch"
+      size_mb: 119
+      license: "Apache-2.0"
+      classes: ["license_plate"]
+      input_size: [960, 960]
+      notes: "Trained on 30,000+ Iranian plate images. Highest mAP@0.5."
+
+    - name: "YOLOv8m Iranian Plate Detector"
+      source: "https://huggingface.co/shalchianmh/Iran_license_plate_detection_YOLOv8m"
+      file: "YOLOv8m_Iran_license_plate_detection.pt"
+      format: "pytorch"
+      license: "AGPL-3.0"
+      notes: "Fine-tuned on Kaggle IranVehiclePlateDataset. AGPL-3.0 — verify commercial compatibility."
+
+  ocr_recognizer:
+    - name: "PaddleOCR PP-OCRv4"
+      source: "https://github.com/PaddlePaddle/PaddleOCR"
+      format: "paddle"
+      license: "Apache-2.0"
+      languages: ["Arabic", "Persian", "English"]
+      notes: "Fine-tune on Persian plate characters for production."
+
+    - name: "PaddleOCR PP-OCRv6 (tiny)"
+      source: "https://github.com/PaddlePaddle/PaddleOCR"
+      format: "paddle"
+      license: "Apache-2.0"
+      notes: "Tiny (1.5M) variant for weak devices."
+
+datasets:
+  - name: "IR-LPR Dataset"
+    source: "https://github.com/mut-deep/IR-LPR"
+    size: "20,967 car images + 27,745 plate character images"
+    license: "GPL-3.0 (repo) / verify dataset terms separately"
+    notes: "Largest published Iranian plate dataset. Verify license before commercial model training."
+
+  - name: "IranVehiclePlateDataset"
+    source: "https://www.kaggle.com/datasets/samyarr/iranvehicleplatedataset"
+    license: "Check Kaggle terms"
+
+fonts:
+  - name: "Traffic Bold"
+    usage: "License plate character font"
+  - name: "Khorshid"
+    usage: "License plate character font"
+  - name: "Roya Bold"
+    usage: "License plate character font"

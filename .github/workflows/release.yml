@@ -1,0 +1,54 @@
+name: Release — AAB & APK for Google Play, Bazaar, Myket
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version name (0.2.0)"
+        required: true
+      versionCode:
+        description: "Version code"
+        required: true
+
+jobs:
+  android:
+    name: Android Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: pnpm install --frozen-lockfile
+      - name: Decode keystore
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > apps/mobile/android/app/nexgen-release.keystore
+      - name: Build Release
+        run: |
+          cd apps/mobile/android
+          ./gradlew bundleRelease assembleRelease \
+            -Pandroid.injected.signing.store.file=app/nexgen-release.keystore \
+            -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} \
+            -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} \
+            -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexgen-dashcam-${{ inputs.version }}
+          path: |
+            apps/mobile/android/app/build/outputs/bundle/release/*.aab
+            apps/mobile/android/app/build/outputs/apk/release/*.apk
+          retention-days: 30
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ inputs.version }}
+          name: NexGen DashCam v${{ inputs.version }}
+          body: "🚗 Android release — AAB for Google Play, APK for Bazaar/Myket"
+          draft: true
