@@ -4,3 +4,6 @@ export * from "./plate";
 export * from "./i18n";
 export * from "./stabilization";
 export * from "./platform";
+export * from "./laneDeparture";
+export * from "./parkingMode";
+export * from "./driverProfile";
