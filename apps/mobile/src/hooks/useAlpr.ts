@@ -1,49 +1,60 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { NativeEventEmitter, NativeModules, Platform } from "react-native";
 import type { PlateEvent } from "@nexgen/core";
+import { ALPR_INFERENCE_FPS_WEAK } from "@nexgen/core";
 
 const { NexGenDashCam } = NativeModules;
+const isNativeAvailable = Platform.OS !== "web" && NexGenDashCam != null;
+
+/** Cap on retained events so a long trip cannot grow memory without bound. */
+const MAX_RETAINED_PLATES = 500;
+
+export type AlprStatus = "idle" | "loading" | "ready" | "error";
 
 export interface AlprState {
   isActive: boolean;
-  status: "loading" | "ready" | "idle" | "error";
+  status: AlprStatus;
   detail: string;
   inferenceFps: number;
   plates: PlateEvent[];
   lastPlate: PlateEvent | null;
 }
 
-export function useAlpr() {
-  const [state, setState] = useState<AlprState>({
-    isActive: false,
-    status: "idle",
-    detail: "",
-    inferenceFps: 4,
-    plates: [],
-    lastPlate: null,
-  });
+const initialState: AlprState = {
+  isActive: false,
+  status: "idle",
+  detail: "",
+  inferenceFps: ALPR_INFERENCE_FPS_WEAK,
+  plates: [],
+  lastPlate: null,
+};
 
+export function useAlpr() {
+  const [state, setState] = useState<AlprState>(initialState);
   const platesRef = useRef<PlateEvent[]>([]);
 
   useEffect(() => {
+    if (!isNativeAvailable) return;
     const emitter = new NativeEventEmitter(NexGenDashCam);
 
     const plateSub = emitter.addListener("onPlateRecognized", (event: PlateEvent) => {
-      platesRef.current = [...platesRef.current, event];
-      setState((s) => ({
-        ...s,
-        plates: platesRef.current,
-        lastPlate: event,
-      }));
+      // Native emits one event per confirmed track; de-duplicate defensively so
+      // a re-delivered event cannot double-count a plate.
+      if (platesRef.current.some((p) => p.eventId === event.eventId)) return;
+
+      const next = [...platesRef.current, event];
+      platesRef.current =
+        next.length > MAX_RETAINED_PLATES ? next.slice(-MAX_RETAINED_PLATES) : next;
+
+      setState((s) => ({ ...s, plates: platesRef.current, lastPlate: event }));
     });
 
-    const statusSub = emitter.addListener("onAlprStatus", (s: { status: string; detail: string }) => {
-      setState((prev) => ({
-        ...prev,
-        status: s.status as AlprState["status"],
-        detail: s.detail,
-      }));
-    });
+    const statusSub = emitter.addListener(
+      "onAlprStatus",
+      (next: { status: AlprStatus; detail: string }) => {
+        setState((s) => ({ ...s, status: next.status, detail: next.detail }));
+      }
+    );
 
     return () => {
       plateSub.remove();
@@ -51,33 +62,29 @@ export function useAlpr() {
     };
   }, []);
 
-  const startAlpr = useCallback(
-    async (fps = 4) => {
-      if (Platform.OS === "web") return;
-      try {
-        await NexGenDashCam.startAlpr({ fps });
-        platesRef.current = [];
-        setState((s) => ({
-          ...s,
-          isActive: true,
-          status: "loading",
-          inferenceFps: fps,
-          plates: [],
-          lastPlate: null,
-        }));
-      } catch (e) {
-        setState((s) => ({ ...s, status: "error", detail: String(e) }));
-      }
-    },
-    []
-  );
+  const startAlpr = useCallback(async (fps: number = ALPR_INFERENCE_FPS_WEAK) => {
+    if (!isNativeAvailable) return;
+    platesRef.current = [];
+    setState({ ...initialState, isActive: true, status: "loading", inferenceFps: fps });
+    try {
+      await NexGenDashCam.startAlpr({ fps });
+    } catch (error) {
+      setState((s) => ({
+        ...s,
+        isActive: false,
+        status: "error",
+        detail: error instanceof Error ? error.message : String(error),
+      }));
+    }
+  }, []);
 
   const stopAlpr = useCallback(async () => {
-    if (Platform.OS === "web") return;
+    if (!isNativeAvailable) return;
     try {
       await NexGenDashCam.stopAlpr();
+    } finally {
       setState((s) => ({ ...s, isActive: false, status: "idle" }));
-    } catch {}
+    }
   }, []);
 
   const clearPlates = useCallback(() => {

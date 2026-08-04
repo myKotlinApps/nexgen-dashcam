@@ -1,12 +1,12 @@
 import "react-native-gesture-handler";
 import "react-native-reanimated";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { TamaguiProvider, Text, Spinner, YStack } from "tamagui";
+import { Spinner, TamaguiProvider, YStack } from "tamagui";
 import * as SplashScreen from "expo-splash-screen";
 import {
   useFonts,
@@ -20,11 +20,14 @@ import {
 import config from "./tamagui.config";
 import { RootNavigator } from "./src/navigation/RootNavigator";
 import { useAppStore } from "./src/store/appStore";
+import { applyLayoutDirection } from "./src/i18n/locale";
 
-SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync().catch(() => {
+  // Splash screen may already be hidden during fast refresh.
+});
 
 export default function App() {
-  const colorScheme = useAppStore((s) => s.theme);
+  const theme = useAppStore((s) => s.theme);
   const [fontsLoaded, fontError] = useFonts({
     Vazirmatn_400Regular,
     Vazirmatn_500Medium,
@@ -33,26 +36,35 @@ export default function App() {
     Vazirmatn_800ExtraBold,
   });
 
-  const onLayoutRootView = useCallback(async () => {
+  useEffect(() => {
+    applyLayoutDirection();
+  }, []);
+
+  const onLayoutRootView = useCallback(() => {
     if (fontsLoaded || fontError) {
-      await SplashScreen.hideAsync();
+      void SplashScreen.hideAsync().catch(() => {});
     }
   }, [fontsLoaded, fontError]);
 
+  // Render the app once fonts resolve. A font error is not fatal — the system
+  // typeface is used instead so recording is never blocked by an asset.
   if (!fontsLoaded && !fontError) {
     return (
       <View style={{ flex: 1, backgroundColor: "#0F172A" }}>
-        <YStack f={1} ai="center" jc="center" gap="$3">
+        <YStack f={1} ai="center" jc="center">
           <Spinner size="large" color="$blue10" />
         </YStack>
       </View>
     );
   }
 
+  // "system" is resolved by Tamagui itself, so only map the explicit choices.
+  const resolvedTheme = theme === "system" ? undefined : theme;
+
   return (
     <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <TamaguiProvider config={config} defaultTheme={colorScheme ?? "dark"}>
+        <TamaguiProvider config={config} defaultTheme={resolvedTheme ?? "dark"}>
           <SafeAreaProvider>
             <StatusBar style="light" />
             <RootNavigator />

@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { NativeEventEmitter, NativeModules, Platform } from "react-native";
-import type { RecordingState, RecordingStatus } from "@nexgen/core";
-import { useAppStore } from "../store";
+import type { RecordingState } from "@nexgen/core";
+import { useAppStore } from "../store/appStore";
 
 const { NexGenDashCam } = NativeModules;
+const isNativeAvailable = Platform.OS !== "web" && NexGenDashCam != null;
 
 const initialState: RecordingState = {
   status: "idle",
@@ -17,50 +18,76 @@ const initialState: RecordingState = {
 
 export function useRecording() {
   const [state, setState] = useState<RecordingState>(initialState);
-  const settings = useAppStore();
+
+  // Subscribe to individual fields so the effect below is not re-created on
+  // every unrelated settings change.
+  const quality = useAppStore((s) => s.quality);
+  const audioEnabled = useAppStore((s) => s.audioEnabled);
+  const gpsEnabled = useAppStore((s) => s.gpsEnabled);
+  const alprEnabled = useAppStore((s) => s.alprEnabled);
+  const storageLimitMB = useAppStore((s) => s.storageLimitMB);
 
   useEffect(() => {
-    if (Platform.OS === "web") return;
+    if (!isNativeAvailable) return;
     const emitter = new NativeEventEmitter(NexGenDashCam);
 
-    const statusSub = emitter.addListener("onStatusChange", (s: Partial<RecordingState>) => {
-      setState((prev) => ({ ...prev, ...s }));
-    });
-
+    const statusSub = emitter.addListener(
+      "onStatusChange",
+      (next: Partial<RecordingState>) => {
+        setState((prev) => ({ ...prev, ...next }));
+      }
+    );
     const stoppedSub = emitter.addListener("onRecordingStopped", () => {
       setState({ ...initialState });
     });
 
-    return () => { statusSub.remove(); stoppedSub.remove(); };
+    return () => {
+      statusSub.remove();
+      stoppedSub.remove();
+    };
   }, []);
 
   const startRecording = useCallback(async () => {
-    if (Platform.OS === "web") return;
+    if (!isNativeAvailable) return;
+    setState((s) => ({ ...s, status: "preparing", errorMessage: undefined }));
     try {
       await NexGenDashCam.startRecording({
-        resolution: settings.quality,
+        resolution: quality,
         fps: 30,
-        bitrateMbps: settings.quality === "1080p" ? 6 : 3,
+        bitrateMbps: quality === "1080p" ? 6 : 3,
         segmentDurationMin: 3,
-        audioEnabled: settings.audioEnabled,
-        gpsEnabled: settings.gpsEnabled,
-        alprEnabled: settings.alprEnabled,
-        storageLimitMB: settings.storageLimitMB,
+        audioEnabled,
+        gpsEnabled,
+        alprEnabled,
+        storageLimitMB,
       });
       setState((s) => ({ ...s, status: "recording" }));
-    } catch (e) {
-      setState((s) => ({ ...s, status: "error", errorMessage: String(e) }));
+    } catch (error) {
+      setState((s) => ({
+        ...s,
+        status: "error",
+        errorMessage: error instanceof Error ? error.message : String(error),
+      }));
     }
-  }, [settings]);
+  }, [quality, audioEnabled, gpsEnabled, alprEnabled, storageLimitMB]);
 
   const stopRecording = useCallback(async () => {
-    if (Platform.OS === "web") return;
-    await NexGenDashCam.stopRecording();
-    setState(initialState);
+    if (!isNativeAvailable) return;
+    setState((s) => ({ ...s, status: "finalizing" }));
+    try {
+      await NexGenDashCam.stopRecording();
+    } finally {
+      setState({ ...initialState });
+    }
   }, []);
 
-  const protectClip = useCallback(async (segmentId: string) => {
-    return Platform.OS !== "web" && (await NexGenDashCam.protectClip(segmentId));
+  const protectClip = useCallback(async (segmentId: string): Promise<boolean> => {
+    if (!isNativeAvailable) return false;
+    try {
+      return Boolean(await NexGenDashCam.protectClip(segmentId));
+    } catch {
+      return false;
+    }
   }, []);
 
   return { ...state, startRecording, stopRecording, protectClip };

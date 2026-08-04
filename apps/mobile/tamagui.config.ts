@@ -1,9 +1,12 @@
-// NexGen DashCam — Tamagui Design System with Vazirmatn
+// NexGen DashCam — Tamagui design system
 //
 // Fonts:
-//   Vazirmatn  — primary Persian/Arabic (SIL OFL 1.1)
-//   Inter      — Latin fallback for digits & non-Persian text
-//   SpaceMono  — monospace for plate numbers, codes, timestamps
+//   Vazirmatn — primary Persian/Arabic typeface (SIL OFL 1.1)
+//   SpaceMono — monospace for plate numbers, codes and timestamps
+//
+// Vazirmatn ships Latin glyphs derived from Roboto, so it covers the Latin
+// digits and D/S series letters that appear on plates. A separate Latin body
+// font is therefore unnecessary.
 
 import { createTamagui } from "tamagui";
 import { createInterFont } from "@tamagui/font-inter";
@@ -11,19 +14,23 @@ import { shorthands } from "@tamagui/shorthands";
 import { themes, tokens } from "@tamagui/themes";
 import { createMedia } from "@tamagui/react-native-media-driver";
 
-// ─── Vazirmatn — Primary Persian/Arabic (OFL) ───────────────
-const vazirmatnFace = { normal: { normal: "Vazirmatn" } };
-
 const vazirmatnFont = createInterFont(
   {
-    face: vazirmatnFace,
+    face: {
+      400: { normal: "Vazirmatn_400Regular" },
+      500: { normal: "Vazirmatn_500Medium" },
+      600: { normal: "Vazirmatn_600SemiBold" },
+      700: { normal: "Vazirmatn_700Bold" },
+      800: { normal: "Vazirmatn_800ExtraBold" },
+    },
     size: {
       1: 11, 2: 12, 3: 13, 4: 14, 5: 16,
       6: 18, 7: 22, 8: 28, 9: 36, 10: 44,
     },
+    // Persian script needs more leading than Latin at the same size.
     lineHeight: {
-      1: 16, 2: 18, 3: 20, 4: 22, 5: 26,
-      6: 28, 7: 32, 8: 38, 9: 46, 10: 54,
+      1: 18, 2: 20, 3: 22, 4: 24, 5: 27,
+      6: 30, 7: 34, 8: 40, 9: 48, 10: 56,
     },
     weight: {
       4: "400", 5: "500", 6: "600", 7: "700", 8: "800",
@@ -38,27 +45,10 @@ const vazirmatnFont = createInterFont(
   }
 );
 
-// ─── Inter — Latin fallback (digits, English UI) ─────────────
-const interFace = { normal: { normal: "Inter" } };
-
-const interFont = createInterFont(
-  { face: interFace },
-  {
-    sizeSize: (size) => Math.round(size * 1.1),
-    sizeLineHeight: (size) => Math.round(size * 1.1 + (size > 20 ? 10 : 10)),
-  }
-);
-
-// ─── SpaceMono — Plate numbers, codes, data ──────────────────
-const monoFace = { normal: { normal: "SpaceMono" } };
-
 const monoFont = createInterFont(
   {
-    face: monoFace,
-    size: {
-      1: 10, 2: 11, 3: 12, 4: 14, 5: 16,
-      6: 20, 7: 26, 8: 32,
-    },
+    face: { 400: { normal: "SpaceMono" }, 700: { normal: "SpaceMono" } },
+    size: { 1: 10, 2: 11, 3: 12, 4: 14, 5: 16, 6: 20, 7: 26, 8: 32 },
   },
   {
     sizeSize: (size) => Math.round(size),
@@ -66,7 +56,7 @@ const monoFont = createInterFont(
   }
 );
 
-// ─── DashCam-specific color tokens ───────────────────────────
+/** Semantic tokens for recording, GPS, ALPR and thermal state. */
 export const dashcamTokens = {
   ...tokens,
   color: {
@@ -80,7 +70,6 @@ export const dashcamTokens = {
   },
 };
 
-// ─── Config ──────────────────────────────────────────────────
 const config = createTamagui({
   defaultTheme: "dark",
   shouldAddPrefersColorThemes: true,

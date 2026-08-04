@@ -1,53 +1,71 @@
-import type { RegionEntry } from "@nexgen/core";
+import { parsePlate, type RegionEntry } from "@nexgen/core";
 
+/**
+ * Maps the 2-digit province code printed inside the ایران box to a
+ * province/city. Several provinces own multiple codes, and within one code the
+ * series letter can narrow the result to a specific county — for example code
+ * 83 is Fars, where م is Larestan and ه is Jahrom.
+ */
 export class RegionDatabase {
-  private entries: RegionEntry[] = [];
+  private byCode = new Map<string, RegionEntry[]>();
   private version = 0;
 
   load(data: RegionEntry[], version: number): void {
-    this.entries = data;
+    this.byCode.clear();
+    for (const entry of data) {
+      const bucket = this.byCode.get(entry.regionCode);
+      if (bucket) bucket.push(entry);
+      else this.byCode.set(entry.regionCode, [entry]);
+    }
     this.version = version;
   }
 
-  getVersion(): number { return this.version; }
+  getVersion(): number {
+    return this.version;
+  }
 
-  lookup(regionCode: string, letter?: string): RegionEntry[] {
-    return this.entries.filter((entry) => {
-      if (entry.regionCode !== regionCode) return false;
-      if (!entry.letterRange || !letter) return true;
+  /** All entries registered for a province code, optionally filtered by series. */
+  lookup(regionCode: string, series?: string): RegionEntry[] {
+    const candidates = this.byCode.get(regionCode) ?? [];
+    if (!series) return candidates;
+
+    const narrowed = candidates.filter((entry) => {
+      if (!entry.letterRange) return false;
       const [from, to] = entry.letterRange;
-      return letter >= from && letter <= to;
+      return series >= from && series <= to;
     });
+
+    // Fall back to the province-level entries when no county matches.
+    return narrowed.length > 0 ? narrowed : candidates;
+  }
+
+  /** Resolve a full plate string to its most specific region entry. */
+  lookupByPlate(plate: string): RegionEntry | null {
+    const parsed = parsePlate(plate);
+    if (!parsed) return null;
+    const matches = this.lookup(parsed.regionCode, parsed.series || undefined);
+    return matches[0] ?? null;
   }
 
   getProvinces(): string[] {
-    return [...new Set(this.entries.map((e) => e.province))];
+    const provinces = new Set<string>();
+    for (const entries of this.byCode.values()) {
+      for (const entry of entries) provinces.add(entry.province);
+    }
+    return [...provinces].sort();
   }
 
   getRegionCodes(): string[] {
-    return [...new Set(this.entries.map((e) => e.regionCode))];
+    return [...this.byCode.keys()].sort();
   }
 }
 
-export function normalizePlate(raw: string): string {
-  let normalized = raw
-    .replace(/\s+/g, "")
-    .replace(/[|\-–—]/g, "-")
-    .replace(/[۰۱۲۳۴۵۶۷۸۹]/g, (d) => {
-      const map: Record<string, string> = {
-        "۰": "0", "۱": "1", "۲": "2", "۳": "3", "۴": "4",
-        "۵": "5", "۶": "6", "۷": "7", "۸": "8", "۹": "9",
-      };
-      return map[d] ?? d;
-    })
-    .replace(/[يى]/g, "ی")
-    .replace(/[ك]/g, "ک")
-    .toLowerCase();
-  return normalized;
-}
-
-export function isValidPersianPlate(normalized: string): boolean {
-  const pattern =
-    /^(\d{2})[\-]?([\u0600-\u06FF])[\-]?(\d{3})[\-]?([\u0600-\u06FF]\d{2})$/;
-  return pattern.test(normalized);
-}
+// Plate parsing helpers live in @nexgen/core so the native modules, the app and
+// the dashboard all agree on one canonical format.
+export {
+  normalizePlate,
+  isValidPersianPlate,
+  extractRegionCode,
+  parsePlate,
+  formatPlateFa,
+} from "@nexgen/core";

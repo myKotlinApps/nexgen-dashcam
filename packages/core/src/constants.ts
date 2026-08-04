@@ -46,13 +46,15 @@ export const THERMAL_CRITICAL_C = 48;
 export const ALPR_INFERENCE_FPS_WEAK = 4;
 export const ALPR_INFERENCE_FPS_MEDIUM = 8;
 export const ALPR_INFERENCE_FPS_STRONG = 12;
-export const ALPR_MIN_CONFIDENCE = 0.6;
+
+/** Minimum per-frame OCR confidence before a read is considered at all. */
+export const ALPR_MIN_CONFIDENCE = 0.65;
+
+/** Consecutive agreeing frames required before a plate is emitted. */
 export const ALPR_TRACK_MIN_FRAMES = 3;
 
-export const PERSIAN_PLATE_REGEX =
-  /^(\d{1,2})\s*[|\-]?\s*([\u0600-\u06FF]{1})\s*(\d{3})\s*[|\-]?\s*([\u0600-\u06FF]?\d{2})$/;
+/** IoU threshold for associating a detection with an existing track. */
+export const ALPR_TRACK_IOU_THRESHOLD = 0.3;
 
-export const PERSIAN_DIGIT_MAP: Record<string, string> = {
-  "۰": "0", "۱": "1", "۲": "2", "۳": "3", "۴": "4",
-  "۵": "5", "۶": "6", "۷": "7", "۸": "8", "۹": "9",
-};
+// Plate parsing lives in ./plate.ts. PERSIAN_PLATE_REGEX and PERSIAN_DIGITS are
+// re-exported from there via ./index.ts — do not redefine them here.
