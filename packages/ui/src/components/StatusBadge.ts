@@ -8,6 +8,8 @@ import { Colors, DashCamColors, Typography, Spacing, Radius } from "../tokens";
  * - gps: green (locked) or gray (searching)
  * - alpr: green (confirmed), yellow (tentative), or gray (off)
  * - thermal: green (normal), yellow (warning), red (critical)
+ *
+ * Colors follow Fluent 2 semantic colors (success/warning/danger).
  */
 export type StatusBadgeVariant =
   | "recording"
@@ -32,22 +34,22 @@ export const STATUS_BADGE_CONFIG: Record<
   },
   "gps-locked": {
     color: DashCamColors.gpsLocked,
-    bg: "rgba(34,197,94,0.1)",
+    bg: "rgba(107,183,0,0.12)",
     label: "GPS Locked",
   },
   "gps-searching": {
     color: DashCamColors.gpsUnlocked,
-    bg: "rgba(100,116,139,0.1)",
+    bg: "rgba(121,118,115,0.12)",
     label: "GPS Searching",
   },
   "alpr-confirmed": {
     color: DashCamColors.plateConfirmed,
-    bg: "rgba(34,197,94,0.1)",
+    bg: "rgba(107,183,0,0.12)",
     label: "Plate Confirmed",
   },
   "alpr-tentative": {
     color: DashCamColors.plateTentative,
-    bg: "rgba(234,179,8,0.1)",
+    bg: "rgba(255,200,61,0.14)",
     label: "Reading Plate",
   },
   "alpr-off": {
@@ -57,18 +59,18 @@ export const STATUS_BADGE_CONFIG: Record<
   },
   "thermal-normal": {
     color: DashCamColors.thermalNormal,
-    bg: "rgba(34,197,94,0.1)",
+    bg: "rgba(107,183,0,0.12)",
     label: "Cool",
   },
   "thermal-warning": {
     color: DashCamColors.thermalWarning,
-    bg: "rgba(234,179,8,0.1)",
+    bg: "rgba(255,200,61,0.14)",
     label: "Warm",
     pulse: true,
   },
   "thermal-critical": {
     color: DashCamColors.thermalCritical,
-    bg: "rgba(239,68,68,0.1)",
+    bg: "rgba(209,52,56,0.12)",
     label: "Hot!",
     pulse: true,
   },

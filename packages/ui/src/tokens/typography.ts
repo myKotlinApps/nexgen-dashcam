@@ -1,5 +1,9 @@
-// Typography scale — values in logical pixels
-// Vazirmatn is the primary typeface; Inter is Latin fallback
+// Typography scale — values in logical pixels.
+// Aligned to the Fluent 2 type ramp (Caption / Body / Subtitle / Title /
+// Large Title). Vazirmatn stays the primary typeface: Segoe UI (Fluent's
+// default) is Windows-only and unavailable on Android/iOS/web without
+// licensing, and Vazirmatn already ships Latin glyphs for the D/S plate
+// series letters and digits.
 export const Typography = {
   fontFamily: {
     sans: "Vazirmatn",
@@ -7,21 +11,21 @@ export const Typography = {
     mono: "SpaceMono, monospace",
   },
   fontSize: {
-    xs: 10,    // Labels, badges, timestamps
-    sm: 12,    // Captions, secondary text
-    base: 14,  // Body
-    md: 16,    // Subheadings, list items
-    lg: 18,    // Section titles
-    xl: 22,    // Screen titles
-    xxl: 28,   // Large titles
-    hero: 36,  // Recording indicator, empty states
+    xs: 10,    // Caption 2 — labels, badges, timestamps
+    sm: 12,    // Caption 1 — captions, secondary text
+    base: 14,  // Body 1 — body copy
+    md: 16,    // Body 2 — subheadings, list items
+    lg: 20,    // Subtitle 1 — section titles
+    xl: 24,    // Title 3 — screen titles
+    xxl: 28,   // Title 2 — large titles
+    hero: 40,  // Large Title — recording indicator, empty states
   },
   fontWeight: {
     regular: "400",
     medium: "500",
     semibold: "600",
     bold: "700",
-    extrabold: "800",
+    extrabold: "700",
   },
   lineHeight: {
     tight: 1.2,     // Titles, indicators

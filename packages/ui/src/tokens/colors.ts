@@ -1,62 +1,70 @@
-const tintColorLight = "#0F172A";
-const tintColorDark = "#F1F5F9";
+// Fluent 2 / SharePoint-inspired palette.
+//
+// Source of truth is Microsoft's public Fluent 2 design language
+// (Communication Blue accent + Fluent neutral ramps), since exact Figma
+// Variables from the SharePoint Web UI Kit community file are not
+// available through the connected Figma MCP server (it only exposes
+// FigJam/diagram tools, not design-file reading).
+
+const tintColorLight = "#201F1E";
+const tintColorDark = "#F3F2F1";
 
 export const Colors = {
   light: {
-    text: "#0F172A",
-    textSecondary: "#475569",
-    textTertiary: "#94A3B8",
-    background: "#F8FAFC",
+    text: "#201F1E",
+    textSecondary: "#605E5C",
+    textTertiary: "#A19F9D",
+    background: "#FAF9F8",
     surface: "#FFFFFF",
-    surfaceSecondary: "#F1F5F9",
-    border: "#E2E8F0",
-    borderFocus: "#3B82F6",
+    surfaceSecondary: "#F3F2F1",
+    border: "#EDEBE9",
+    borderFocus: "#0078D4",
     tint: tintColorLight,
-    tabIconDefault: "#94A3B8",
+    tabIconDefault: "#A19F9D",
     tabIconSelected: tintColorLight,
-    primary: "#3B82F6",
-    primaryHover: "#2563EB",
-    destructive: "#EF4444",
-    destructiveHover: "#DC2626",
-    success: "#22C55E",
-    warning: "#EAB308",
+    primary: "#0078D4",
+    primaryHover: "#106EBE",
+    destructive: "#D13438",
+    destructiveHover: "#A4262C",
+    success: "#107C10",
+    warning: "#FFB900",
   },
   dark: {
-    text: "#F1F5F9",
-    textSecondary: "#94A3B8",
-    textTertiary: "#64748B",
-    background: "#0F172A",
-    surface: "#1E293B",
-    surfaceSecondary: "#334155",
-    border: "#334155",
-    borderFocus: "#3B82F6",
+    text: "#F3F2F1",
+    textSecondary: "#979593",
+    textTertiary: "#797673",
+    background: "#1B1A19",
+    surface: "#292827",
+    surfaceSecondary: "#3B3A39",
+    border: "#3B3A39",
+    borderFocus: "#479EF5",
     tint: tintColorDark,
-    tabIconDefault: "#64748B",
+    tabIconDefault: "#797673",
     tabIconSelected: tintColorDark,
-    primary: "#3B82F6",
-    primaryHover: "#60A5FA",
-    destructive: "#EF4444",
-    destructiveHover: "#F87171",
-    success: "#22C55E",
-    warning: "#EAB308",
+    primary: "#479EF5",
+    primaryHover: "#8AC2F0",
+    destructive: "#F1707B",
+    destructiveHover: "#F8A7AD",
+    success: "#6BB700",
+    warning: "#FFC83D",
   },
 };
 
-// DashCam-specific semantic tokens
+// DashCam-specific semantic tokens (Fluent semantic colors)
 export const DashCamColors = {
-  recording: "#EF4444",
-  recordingPulse: "rgba(239, 68, 68, 0.15)",
-  gpsLocked: "#22C55E",
-  gpsUnlocked: "#64748B",
-  plateConfirmed: "#22C55E",
-  plateTentative: "#EAB308",
-  plateBounding: "rgba(34, 197, 94, 0.3)",
-  thermalNormal: "#22C55E",
-  thermalWarning: "#EAB308",
-  thermalCritical: "#EF4444",
-  storageNormal: "#22C55E",
-  storageWarning: "#EAB308",
-  storageCritical: "#EF4444",
-  overlayDark: "rgba(15, 23, 42, 0.75)",
-  overlayGlass: "rgba(15, 23, 42, 0.85)",
+  recording: "#D13438",
+  recordingPulse: "rgba(209, 52, 56, 0.15)",
+  gpsLocked: "#6BB700",
+  gpsUnlocked: "#797673",
+  plateConfirmed: "#6BB700",
+  plateTentative: "#FFC83D",
+  plateBounding: "rgba(107, 183, 0, 0.3)",
+  thermalNormal: "#6BB700",
+  thermalWarning: "#FFC83D",
+  thermalCritical: "#D13438",
+  storageNormal: "#6BB700",
+  storageWarning: "#FFC83D",
+  storageCritical: "#D13438",
+  overlayDark: "rgba(27, 26, 25, 0.75)",
+  overlayGlass: "rgba(27, 26, 25, 0.85)",
 };

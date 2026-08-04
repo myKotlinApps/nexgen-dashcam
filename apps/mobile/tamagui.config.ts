@@ -7,6 +7,10 @@
 // Vazirmatn ships Latin glyphs derived from Roboto, so it covers the Latin
 // digits and D/S series letters that appear on plates. A separate Latin body
 // font is therefore unnecessary.
+//
+// Color tokens follow the Fluent 2 / SharePoint Web UI Kit inspired theme
+// (Communication Blue accent + Fluent neutral dark ramp) — see
+// packages/ui/DESIGN_SYSTEM.md for the full rationale and palette.
 
 import { createTamagui } from "tamagui";
 import { createInterFont } from "@tamagui/font-inter";
@@ -25,12 +29,12 @@ const vazirmatnFont = createInterFont(
     },
     size: {
       1: 11, 2: 12, 3: 13, 4: 14, 5: 16,
-      6: 18, 7: 22, 8: 28, 9: 36, 10: 44,
+      6: 20, 7: 24, 8: 28, 9: 40, 10: 48,
     },
     // Persian script needs more leading than Latin at the same size.
     lineHeight: {
       1: 18, 2: 20, 3: 22, 4: 24, 5: 27,
-      6: 30, 7: 34, 8: 40, 9: 48, 10: 56,
+      6: 32, 7: 36, 8: 40, 9: 52, 10: 60,
     },
     weight: {
       4: "400", 5: "500", 6: "600", 7: "700", 8: "800",
@@ -56,17 +60,24 @@ const monoFont = createInterFont(
   }
 );
 
-/** Semantic tokens for recording, GPS, ALPR and thermal state. */
+/**
+ * Semantic tokens for recording, GPS, ALPR and thermal state.
+ * Fluent 2 / SharePoint-inspired: Communication Blue accent, Fluent
+ * neutral dark surfaces, Fluent semantic success/warning/danger colors.
+ */
 export const dashcamTokens = {
   ...tokens,
   color: {
     ...tokens.color,
-    plateBg: "#1E293B",
-    plateBorder: "#334155",
-    recRed: "#EF4444",
-    okGreen: "#22C55E",
-    warnYellow: "#EAB308",
-    surfaceGlass: "rgba(15,23,42,0.85)",
+    accent: "#0078D4",
+    accentHover: "#106EBE",
+    accentLight: "#479EF5",
+    plateBg: "#292827",
+    plateBorder: "#3B3A39",
+    recRed: "#D13438",
+    okGreen: "#6BB700",
+    warnYellow: "#FFC83D",
+    surfaceGlass: "rgba(27,26,25,0.85)",
   },
 };
 
