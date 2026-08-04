@@ -7,3 +7,4 @@ export * from "./platform";
 export * from "./laneDeparture";
 export * from "./parkingMode";
 export * from "./driverProfile";
+export * from "./voiceAssistant";
