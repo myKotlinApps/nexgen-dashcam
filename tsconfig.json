@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "baseUrl": ".",
+    "paths": {
+      "@nexgen/core": ["packages/core/src"],
+      "@nexgen/ui": ["packages/ui/src"],
+      "@nexgen/storage": ["packages/storage/src"],
+      "@nexgen/telemetry": ["packages/telemetry/src"]
+    }
+  },
+  "exclude": ["node_modules", "dist", "build", ".expo"]
+}

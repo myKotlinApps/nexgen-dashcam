@@ -1,0 +1,48 @@
+{
+  "expo": {
+    "name": "NexGen DashCam",
+    "slug": "nexgen-dashcam",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "nexgen",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.nexgen.dashcam",
+      "infoPlist": {
+        "NSCameraUsageDescription": "DashCam needs camera access to record your drives.",
+        "NSMicrophoneUsageDescription": "DashCam can optionally record audio inside your vehicle.",
+        "NSLocationWhenInUseUsageDescription": "DashCam records GPS location to overlay on video.",
+        "UIBackgroundModes": ["audio"],
+        "UIRequiresFullScreen": true
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0F172A"
+      },
+      "permissions": [
+        "CAMERA",
+        "RECORD_AUDIO",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "FOREGROUND_SERVICE",
+        "FOREGROUND_SERVICE_CAMERA",
+        "FOREGROUND_SERVICE_LOCATION",
+        "POST_NOTIFICATIONS"
+      ],
+      "package": "com.nexgen.dashcam"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "react-native-vision-camera",
+        {
+          "cameraPermissionText": "DashCam needs camera access to record your drives.",
+          "enableMicrophonePermission": true,
+          "microphonePermissionText": "DashCam can optionally record audio inside your vehicle."
+        }
+      ]
+    ]
+  }
+}
