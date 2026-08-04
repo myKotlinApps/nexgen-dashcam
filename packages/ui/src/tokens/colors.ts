@@ -1,0 +1,62 @@
+const tintColorLight = "#0F172A";
+const tintColorDark = "#F1F5F9";
+
+export const Colors = {
+  light: {
+    text: "#0F172A",
+    textSecondary: "#475569",
+    textTertiary: "#94A3B8",
+    background: "#F8FAFC",
+    surface: "#FFFFFF",
+    surfaceSecondary: "#F1F5F9",
+    border: "#E2E8F0",
+    borderFocus: "#3B82F6",
+    tint: tintColorLight,
+    tabIconDefault: "#94A3B8",
+    tabIconSelected: tintColorLight,
+    primary: "#3B82F6",
+    primaryHover: "#2563EB",
+    destructive: "#EF4444",
+    destructiveHover: "#DC2626",
+    success: "#22C55E",
+    warning: "#EAB308",
+  },
+  dark: {
+    text: "#F1F5F9",
+    textSecondary: "#94A3B8",
+    textTertiary: "#64748B",
+    background: "#0F172A",
+    surface: "#1E293B",
+    surfaceSecondary: "#334155",
+    border: "#334155",
+    borderFocus: "#3B82F6",
+    tint: tintColorDark,
+    tabIconDefault: "#64748B",
+    tabIconSelected: tintColorDark,
+    primary: "#3B82F6",
+    primaryHover: "#60A5FA",
+    destructive: "#EF4444",
+    destructiveHover: "#F87171",
+    success: "#22C55E",
+    warning: "#EAB308",
+  },
+};
+
+// DashCam-specific semantic tokens
+export const DashCamColors = {
+  recording: "#EF4444",
+  recordingPulse: "rgba(239, 68, 68, 0.15)",
+  gpsLocked: "#22C55E",
+  gpsUnlocked: "#64748B",
+  plateConfirmed: "#22C55E",
+  plateTentative: "#EAB308",
+  plateBounding: "rgba(34, 197, 94, 0.3)",
+  thermalNormal: "#22C55E",
+  thermalWarning: "#EAB308",
+  thermalCritical: "#EF4444",
+  storageNormal: "#22C55E",
+  storageWarning: "#EAB308",
+  storageCritical: "#EF4444",
+  overlayDark: "rgba(15, 23, 42, 0.75)",
+  overlayGlass: "rgba(15, 23, 42, 0.85)",
+};
