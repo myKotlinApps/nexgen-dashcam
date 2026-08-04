@@ -10,52 +10,42 @@ android {
 
     defaultConfig {
         applicationId = "com.nexgen.dashcam"
-        minSdk = 21
+        minSdk = 21  // Android 5.0 for CameraX; 24 (7.0) recommended
         targetSdk = 36
         versionCode = 1
         versionName = "0.1.0"
-
-        ndk {
-            abiFilters += listOf("arm64-v8a", "armeabi-v7a")
-        }
+        ndk { abiFilters += listOf("arm64-v8a", "armeabi-v7a") }
     }
 
     buildTypes {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
-        debug {
-            isDebuggable = true
-            applicationIdSuffix = ".debug"
+        debug { isDebuggable = true; applicationIdSuffix = ".debug" }
+    }
+
+    flavorDimensions += "target"
+    productFlavors {
+        create("standard") {
+            dimension = "target"
+            minSdk = 21  // Full CameraX, EIS software always
+        }
+        create("legacy") {
+            dimension = "target"
+            minSdk = 21  // Android 5.0 minimum
+            versionNameSuffix = "-legacy"
         }
     }
 
-    buildFeatures {
-        compose = false
-        buildConfig = true
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
-    }
+    buildFeatures { compose = false; buildConfig = true }
+    compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
+    kotlinOptions { jvmTarget = "17" }
 
     packaging {
-        jniLibs {
-            useLegacyPackaging = false
-        }
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
+        jniLibs { useLegacyPackaging = false }
+        resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" }
     }
 }
 
