@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- DashCam recordings -->
+    <files-path name="dashcam" path="dashcam/" />
+
+    <!-- Model weights (downloaded on-demand) -->
+    <files-path name="models" path="models/" />
+
+    <!-- Export / share -->
+    <cache-path name="exports" path="exports/" />
+
+    <!-- External storage for large videos (API < 29) -->
+    <external-files-path name="external_dashcam" path="dashcam/" />
+</paths>
