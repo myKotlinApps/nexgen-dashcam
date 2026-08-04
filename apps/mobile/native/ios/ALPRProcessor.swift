@@ -1,4 +1,4 @@
-@file: ALPRProcessor.swift — Persian plate recognition
+// ALPRProcessor.swift — Persian plate recognition
 import Foundation
 import Vision
 import CoreImage
